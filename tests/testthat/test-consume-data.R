@@ -32,29 +32,28 @@ test_that("Cell ranges can be converted to a cell limit list", {
   
   jfun <- function(x) x %>%
     as.list() %>%
-    setNames(c("min-row", "max-row", "min-col", "max-col"))
+    setNames(c("min-row", "min-col", "max-row", "max-col"))
   
-  expect_equal(convert_range_to_limit_list("C1"), jfun(c(1,1,3,3)))
-  expect_equal(convert_range_to_limit_list("R2C8"), jfun(c(2,2,8,8)))
+  expect_equal(convert_range_to_limit_list("C1"), jfun(c(1,3,1,3)))
+  expect_equal(convert_range_to_limit_list("R2C8", rc = TRUE), jfun(c(2,8,2,8)))
   
-  expect_equal(convert_range_to_limit_list("C1:D4"), jfun(c(1,4,3,4)))
-  expect_equal(convert_range_to_limit_list("R3C1:R5C4"), jfun(c(3,5,1,4)))
+  expect_equal(convert_range_to_limit_list("C1:D4"), jfun(c(1,3,4,4)))
+  expect_equal(convert_range_to_limit_list("R3C1:R5C4", rc = TRUE),
+               jfun(c(3,1,5,4)))
   
-  expect_equal(convert_range_to_limit_list("a3:b4"), jfun(c(3,4,1,2)))
+  expect_equal(convert_range_to_limit_list("a3:b4"), jfun(c(3,1,4,2)))
   
 })
 
 test_that("Bad cell ranges throw error", {
   
-  error_regex <- "Trying to set cell limits, but requested range is invalid"
-  error_strsplit <- 'non-character argument'
+  error_regex <- "Requested cell range is invalid"
   
   expect_error(convert_range_to_limit_list("eggplant1"), error_regex)
-  expect_error(convert_range_to_limit_list(11L), error_strsplit)
-  expect_error(convert_range_to_limit_list(factor(1:5)), error_strsplit)
-  expect_error(convert_range_to_limit_list(16.3), error_strsplit)
-  expect_error(convert_range_to_limit_list("AAA1"), error_regex)
-  expect_error(convert_range_to_limit_list(10:1), error_strsplit)
+  expect_error(convert_range_to_limit_list(11L))
+  expect_error(convert_range_to_limit_list(factor(1:5)))
+  expect_error(convert_range_to_limit_list(16.3))
+  expect_error(convert_range_to_limit_list(10:1))
   
 })
 
@@ -99,7 +98,7 @@ test_that("We can get data from a cell range", {
   expect_true(all(foo$col %in% 2:3))
   expect_true(all(foo$row %in% 3:7))
   
-  foo <- ss %>% get_cells(ws = "Europe", range = "R3C2:R7C3")
+  foo <- ss %>% get_cells(ws = "Europe", range = "R3C2:R7C3", rc = TRUE)
   expect_is(foo, "tbl_df")
   expect_true(all(foo$col %in% 2:3))
   expect_true(all(foo$row %in% 3:7))
@@ -109,7 +108,7 @@ test_that("We can get data from a cell range", {
   expect_equal(foo$col, 3)
   expect_equal(foo$row, 4)
   
-  foo <- ss %>% get_cells(ws = "Europe", range = "R4C3")
+  foo <- ss %>% get_cells(ws = "Europe", range = "R4C3", rc = TRUE)
   expect_is(foo, "tbl_df")
   expect_equal(foo$col, 3)
   expect_equal(foo$row, 4)

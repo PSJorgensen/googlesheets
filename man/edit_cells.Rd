@@ -4,8 +4,8 @@
 \alias{edit_cells}
 \title{Edit cells}
 \usage{
-edit_cells(ss, ws = 1, input = "", anchor = "A1", by_row = FALSE,
-  header = FALSE, trim = FALSE, verbose = TRUE)
+edit_cells(ss, ws = 1, input = "", anchor = "A1", rc = FALSE,
+  by_row = FALSE, header = FALSE, trim = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{ss}{a registered Google spreadsheet}
@@ -18,7 +18,10 @@ character vector, presumably an atomic vector, a factor, a matrix or a
 data.frame}
 
 \item{anchor}{single character string specifying the upper left cell of the
-cell range to edit; positioning notation can be either "A1" or "R1C1"}
+cell range to edit}
+
+\item{rc}{logical indicating if positioning notation is "R1C1" or "A1";
+default is FALSE, indicating "A1" notation}
 
 \item{by_row}{logical; should we fill cells across a row (\code{by_row =
 TRUE}) or down a column (\code{by_row = FALSE}, default); consulted only

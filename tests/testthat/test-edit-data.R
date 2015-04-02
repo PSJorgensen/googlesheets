@@ -49,7 +49,7 @@ test_that("Cell update can force resize of worksheet", {
   Sys.sleep(1)
   
   # force worksheet extent to be increased
-  expect_message(ss <- edit_cells(ss, ws, "Way out there!", "R1C30"), 
+  expect_message(ss <- edit_cells(ss, ws, "Way out there!", "R1C30", rc = TRUE),
                  "dimensions changed")
   Sys.sleep(1)
   expect_equal(ss %>% get_ws(ws) %>% `[[`("col_extent"), 30)

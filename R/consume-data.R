@@ -344,9 +344,9 @@ get_col <- function(ss, ws = 1, col) {
 #' }
 #'
 #' @export
-get_cells <- function(ss, ws = 1, range) {
+get_cells <- function(ss, ws = 1, range, rc = FALSE) {
 
-  limits <- convert_range_to_limit_list(range)
+  limits <- convert_range_to_limit_list(range, rc = rc)
   get_via_cf(ss, ws, limits = limits)
 }
 

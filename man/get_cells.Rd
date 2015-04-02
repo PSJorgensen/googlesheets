@@ -4,7 +4,7 @@
 \alias{get_cells}
 \title{Get data from a cell or range of cells}
 \usage{
-get_cells(ss, ws = 1, range)
+get_cells(ss, ws = 1, range, rc = FALSE)
 }
 \arguments{
 \item{ss}{a registered Google spreadsheet}
