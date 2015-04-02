@@ -16,10 +16,12 @@ character vector of letter-style column IDs
 Convert column IDs from numeric to letter representation
 }
 \examples{
+\dontrun{
 num_to_letter(28)
 num_to_letter(900)
 num_to_letter(18278)
 num_to_letter(c(25, 52, 900, 18278))
+}
 }
 \keyword{internal}
 

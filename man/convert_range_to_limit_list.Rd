@@ -20,11 +20,13 @@ list with 4 positive integer elements named \code{min-row},
 Convert a cell range into a limits list
 }
 \examples{
+\dontrun{
 convert_range_to_limit_list("A1")
 convert_range_to_limit_list("Q24")
 convert_range_to_limit_list("A1:D8")
 convert_range_to_limit_list("R5C11", rc = TRUE)
 convert_range_to_limit_list("R2C3:R6C9", rc = TRUE)
+}
 }
 \keyword{internal}
 

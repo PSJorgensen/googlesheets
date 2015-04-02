@@ -19,9 +19,11 @@ length one character vector holding a cell range, in either A1 or
 Convert a limits list to a cell range
 }
 \examples{
+\dontrun{
 rgLL <- list(`min-row` = 1, `max-row` = 4, `min-col` = 1, `max-col` = 3)
 convert_limit_list_to_range(rgLL)
 convert_limit_list_to_range(rgLL, rc = TRUE)
+}
 }
 \keyword{internal}
 

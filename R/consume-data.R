@@ -330,6 +330,7 @@ get_col <- function(ss, ws = 1, col) {
 #'   to retrieve; positioning notation can be either "A1" or "R1C1"; a single
 #'   cell can be requested, e.g. "B4" or "R4C2" or a rectangular range can be
 #'   requested, e.g. "B2:D4" or "R2C2:R4C4"
+#' @param rc logical, indicating "R1C1" positioning notation
 #'
 #' @family data consumption functions
 #' @seealso \code{\link{reshape_cf}} to reshape the retrieved data into a more

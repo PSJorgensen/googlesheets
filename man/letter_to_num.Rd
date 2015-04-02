@@ -16,8 +16,10 @@ vector of positive integers identifying columns numerically
 Convert column IDs from letter representation to integer
 }
 \examples{
+\dontrun{
 letter_to_num('Z')
 letter_to_num(c('AA', 'ZZ', 'ABD', 'ZZZ'))
+}
 }
 \keyword{internal}
 

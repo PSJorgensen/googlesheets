@@ -11,13 +11,16 @@ RC_to_A1(x)
 }
 \value{
 vector of cell positions in A1 notation
-
+}
+\description{
+Convert R1C1 positioning notation to A1 notation
+}
+\examples{
+\dontrun{
 A1_to_RC("A1")
 A1_to_RC("AZ10")
 A1_to_RC(c("A1", "AZ10"))
 }
-\description{
-Convert R1C1 positioning notation to A1 notation
 }
 \keyword{internal}
 

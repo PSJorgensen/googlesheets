@@ -17,7 +17,10 @@ list with 4 positive integer elements named \code{min-row},
 Convert a cell range, special case wrapper for R1C1 positioning notation
 }
 \examples{
+\dontrun{
 rc("R1C1:R7C4")
 rc("R3C3")
 }
+}
+\keyword{internal}
 

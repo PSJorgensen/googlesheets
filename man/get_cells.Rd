@@ -13,9 +13,11 @@ get_cells(ss, ws = 1, range, rc = FALSE)
   respectively, of the worksheet to consume}
 
 \item{range}{single character string specifying which cell or range of cells
-  to retrieve; positioning notation can be either "A1" or "R1C1"; a single
-  cell can be requested, e.g. "B4" or "R4C2" or a rectangular range can be
-  requested, e.g. "B2:D4" or "R2C2:R4C4"}
+to retrieve; positioning notation can be either "A1" or "R1C1"; a single
+cell can be requested, e.g. "B4" or "R4C2" or a rectangular range can be
+requested, e.g. "B2:D4" or "R2C2:R4C4"}
+
+\item{rc}{logical, indicating "R1C1" positioning notation}
 }
 \description{
 Get data via the cell feed for a rectangular range of cells
