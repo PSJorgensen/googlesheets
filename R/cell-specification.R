@@ -10,8 +10,10 @@
 #' @return vector of positive integers identifying columns numerically
 #'
 #' @examples
+#' \dontrun{
 #' letter_to_num('Z')
 #' letter_to_num(c('AA', 'ZZ', 'ABD', 'ZZZ'))
+#' }
 #' 
 #' @keywords internal
 letter_to_num <- function(x) {
@@ -30,10 +32,12 @@ letter_to_num <- function(x) {
 #' @return character vector of letter-style column IDs
 #'
 #' @examples
+#' \dontrun{
 #' num_to_letter(28)
 #' num_to_letter(900)
 #' num_to_letter(18278)
 #' num_to_letter(c(25, 52, 900, 18278))
+#' }
 #' 
 #' @keywords internal
 num_to_letter <- function(y) {
@@ -67,9 +71,11 @@ num_to_letter <- function(y) {
 #' @return vector of cell positions in R1C1 notation
 #' 
 #' @examples
+#' \dontrun{
 #' A1_to_RC("A1")
 #' A1_to_RC("AZ10")
 #' A1_to_RC(c("A1", "AZ10"))
+#' }
 #'
 #' @keywords internal
 A1_to_RC <- function(x) {
@@ -88,10 +94,13 @@ A1_to_RC <- function(x) {
 #' @param x vector of cell positions in R1C1 notation
 #' 
 #' @return vector of cell positions in A1 notation
-#'
+#' 
+#' @examples
+#' \dontrun{
 #' A1_to_RC("A1")
 #' A1_to_RC("AZ10")
 #' A1_to_RC(c("A1", "AZ10"))
+#' }
 #' 
 #' @keywords internal
 RC_to_A1 <- function(x) {
@@ -114,11 +123,13 @@ RC_to_A1 <- function(x) {
 #'   \code{max-row}, \code{min-col}, \code{max-col}
 #'   
 #' @examples
+#' \dontrun{
 #' convert_range_to_limit_list("A1")
 #' convert_range_to_limit_list("Q24")
 #' convert_range_to_limit_list("A1:D8")
 #' convert_range_to_limit_list("R5C11", rc = TRUE)
 #' convert_range_to_limit_list("R2C3:R6C9", rc = TRUE)
+#' }
 #' 
 #' @keywords internal
 convert_range_to_limit_list <- function(x, rc = FALSE) {
@@ -164,9 +175,12 @@ convert_range_to_limit_list <- function(x, rc = FALSE) {
 #'   \code{max-row}, \code{min-col}, \code{max-col}
 #'   
 #' @examples
+#' \dontrun{
 #' rc("R1C1:R7C4")
 #' rc("R3C3")
-#' 
+#' }
+#'
+#' @keywords internal
 rc <- function(range) convert_range_to_limit_list(range, rc = TRUE) 
 
 #' Convert a limits list to a cell range
@@ -178,9 +192,11 @@ rc <- function(range) convert_range_to_limit_list(range, rc = TRUE)
 #'   R1C1 positioning notation
 #'   
 #' @examples
+#' \dontrun{
 #' rgLL <- list(`min-row` = 1, `max-row` = 4, `min-col` = 1, `max-col` = 3)
 #' convert_limit_list_to_range(rgLL)
 #' convert_limit_list_to_range(rgLL, rc = TRUE)
+#' }
 #' 
 #' @keywords internal
 convert_limit_list_to_range <- function(limits, rc = FALSE) {
