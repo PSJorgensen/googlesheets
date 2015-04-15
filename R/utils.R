@@ -100,13 +100,15 @@ str1 <- function(...) str(..., max.level = 1)
 extract_key_from_url <- function(url) {
   url_start_list <-
     c(ws_feed_start = "https://spreadsheets.google.com/feeds/worksheets/",
+      self_link_start = "https://spreadsheets.google.com/feeds/spreadsheets/private/full/",
       url_start_new = "https://docs.google.com/spreadsheets/d/",
       url_start_old = "https://docs.google.com/spreadsheet/ccc\\?key=",
-      url_start_old2 = "https://docs.google.com/spreadsheet/pub\\?key=")
+      url_start_old2 = "https://docs.google.com/spreadsheet/pub\\?key=",
+      url_start_old3 = "https://spreadsheets.google.com/ccc\\?key=")
   url_start <- url_start_list %>% stringr::str_c(collapse = "|")
   url %>% stringr::str_replace(url_start, '') %>%
     stringr::str_split_fixed('[/&#]', n = 2) %>%
-    `[`(1)
+    `[`(, 1)
 }
 
 #' Construct a worksheets feed from a key

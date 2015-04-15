@@ -35,6 +35,15 @@ get_via_csv <- function(ss, ws = 1, ...) {
   stopifnot(ss %>% inherits("googlesheet"))
   
   this_ws <- get_ws(ss, ws)
+  
+  if(is.null(this_ws$exportcsv)) {
+    stop(paste("This appears to be an \"old\" Google Sheet. The old Sheets do",
+               "not offer the API access required by this function.",
+               "Consider converting it from an old Sheet to a new Sheet.",
+               "Or use another data consumption function, such as get_via_lf()",
+               "or get_via_cf(). Or use download_ss() to export it to a local",
+               "file and then read it into R."))
+  }
 
   ## since gsheets_GET expects xml back, just using GET for now
   if(ss$is_public) {
@@ -97,37 +106,42 @@ get_via_lf <- function(ss, ws = 1) {
   this_ws <- get_ws(ss, ws)
   req <- gsheets_GET(this_ws$listfeed)
   row_data <- req$content %>% lfilt("entry")
+  
+  ## when I switch to xml2 and/or stop converting feed via xmlToList(), I can
+  ## dramatically rationalize the separation of boilerplate from content
+  ## TO DO: experiment with empty header cells, header cells with
+  ## space or other non-alphanumeric characters
+  ## https://developers.google.com/google-apps/spreadsheets/#working_with_list-based_feeds
+  
   component_names <- row_data[[1]] %>% names()
-  boilerplate_names <- ## what if spreadsheet header row contains these names??
-    ## safer to get via ... numeric index? or by parsing entry$title and
-    ## entry$content$text?
-    ## sigh: if I were still using XML, use of gsx namespace would disambiguate
-    ## this
-    ## TO DO: experiment with empty header cells, header cells with
-    ## space or other non-alphanumeric characters
-    ## https://developers.google.com/google-apps/spreadsheets/#working_with_list-based_feeds
+  boilerplate_names <-
     c("id", "updated", "category", "title", "content", "link")
-  var_names <- component_names %>% dplyr::setdiff(boilerplate_names)
+  last_boilerplate <-
+    which(!(component_names %in% boilerplate_names)) %>%
+    min() %>%
+    `-`(1)
+  drop_boilerplate_vars <- -1 * seq_len(last_boilerplate)
+  var_names <- component_names[drop_boilerplate_vars]
+  
+  ## used below to handle empty cells: replace NULL with NA
+  null_NA_character <- function(x) if(is.null(x)) NA_character_ else x
+  
   row_data %>%
-    ## get just the data, as named character vector
-    plyr::llply(function(x) x[var_names] %>% unlist) %>%
-      ## rowbind to produce character matrix
-      do.call("rbind", .) %>%
-      ## drop stupid repetitive "entry" rownames
-      `rownames<-`(NULL) %>%
-      ## convert to integer, numeric, etc. but w/ stringsAsFactors = FALSE
-      plyr::alply(2, type.convert, as.is = TRUE, .dims = TRUE) %>%
-      ## get rid of attributes that are non-standard for tbl_dfs or data.frames
-      ## and that are an artefact of the above (specifically, I think, the use of
-      ## alply?); if I don't do this, the output is fugly when you str() it
-      `attr<-`("split_type", NULL) %>%
-      `attr<-`("split_labels", NULL) %>%
-      `attr<-`("dim", NULL) %>%
-      ## for some reason removing the non-standard dim attributes clobbers the
-      ## variable names, so those must be restored
-      `names<-`(var_names) %>%
-      ## convert to data.frame (tbl_df, actually)
-      dplyr::as_data_frame()
+    unname() %>% # drop stupid and ubiquitous 'entry' names
+    plyr::llply(`[`, drop_boilerplate_vars) %>%
+    plyr::llply(function(x) unlist(lapply(x, null_NA_character))) %>%
+    do.call("rbind", .) %>%
+    plyr::alply(2, type.convert, as.is = TRUE, .dims = TRUE)  %>%
+    ## get rid of attributes that are non-standard for tbl_dfs or data.frames
+    ## and that are an artefact of the above (specifically, I think, the use of
+    ## alply?); if I don't do this, the output is fugly when you str() it
+    `attr<-`("split_type", NULL) %>%
+    `attr<-`("split_labels", NULL) %>%
+    `attr<-`("dim", NULL) %>%
+    ## for some reason removing the non-standard dim attributes clobbers the
+    ## variable names, so those must be restored
+    `names<-`(var_names) %>%
+    dplyr::as_data_frame()
 }
 
 #' Create a data.frame of the non-empty cells in a rectangular region of a
@@ -229,7 +243,12 @@ get_via_cf <-
         `rownames<-`(NULL) %>%
         as.data.frame(stringsAsFactors = FALSE)
       # edit link looks like so: "path/R1C1/version"
-      edit_link <- links$href[grepl("edit", links$rel)]
+      edit_link <- grepl("edit", links$rel)
+      if(any(edit_link)) {
+        edit_link <- links$href[edit_link]
+      } else {
+        edit_link <- NA_character_
+      }
 
       dplyr::data_frame(cell = x$title$text,
                         cell_alt = x$id %>% basename,
@@ -373,7 +392,8 @@ reshape_cf <- function(x, header = TRUE) {
     dplyr::summarise_each_(dplyr::funs(min, max), list(~ row, ~ col))
   all_possible_cells <-
     with(limits,
-         expand.grid(row = row_min:row_max, col = col_min:col_max))
+         expand.grid(row = row_min:row_max, col = col_min:col_max)) %>%
+    dplyr::as.tbl()
   suppressMessages(
     x_augmented <- all_possible_cells %>% dplyr::left_join(x)
   )
