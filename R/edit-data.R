@@ -1,49 +1,47 @@
 #' Edit cells
-#' 
-#' Modify the contents of one or more cells. The cells to be edited are 
-#' specified implicitly by a single anchor cell, which will be the upper left 
+#'
+#' Modify the contents of one or more cells. The cells to be edited are
+#' specified implicitly by a single anchor cell, which will be the upper left
 #' corner of the edited cell region, and the size and shape of the input. If the
-#' input has rectangular shape, i.e. is a data.frame or matrix, then a simiarly 
-#' shaped range of cells will be updated. If the input has no dimension, i.e. 
-#' it's a vector, then \code{by_row} controls whether edited cells will extend 
+#' input has rectangular shape, i.e. is a data.frame or matrix, then a simiarly
+#' shaped range of cells will be updated. If the input has no dimension, i.e.
+#' it's a vector, then \code{by_row} controls whether edited cells will extend
 #' from the anchor across a row or down a column.
-#' 
+#'
 #' @inheritParams get_via_lf
-#' @param input new cell values, as an object that can be coerced into a 
-#'   character vector, presumably an atomic vector, a factor, a matrix or a 
+#' @param input new cell values, as an object that can be coerced into a
+#'   character vector, presumably an atomic vector, a factor, a matrix or a
 #'   data.frame
-#' @param anchor single character string specifying the upper left cell of the 
+#' @param anchor single character string specifying the upper left cell of the
 #'   cell range to edit
-#' @param rc logical indicating if positioning notation is "R1C1" or "A1";
-#'   default is FALSE, indicating "A1" notation
-#' @param by_row logical; should we fill cells across a row (\code{by_row = 
-#'   TRUE}) or down a column (\code{by_row = FALSE}, default); consulted only 
+#' @param by_row logical; should we fill cells across a row (\code{by_row =
+#'   TRUE}) or down a column (\code{by_row = FALSE}, default); consulted only
 #'   when \code{input} is a vector, i.e. \code{dim(input)} is \code{NULL}
-#' @param header logical; indicates whether column names of input should be 
-#'   included in the edit, i.e. prepended to the input; consulted only when 
-#'   \code{length(dim(input))} equals 2, i.e. \code{input} is a matrix or 
+#' @param header logical; indicates whether column names of input should be
+#'   included in the edit, i.e. prepended to the input; consulted only when
+#'   \code{length(dim(input))} equals 2, i.e. \code{input} is a matrix or
 #'   data.frame
-#' @param trim logical; do you want the worksheet extent to be modified to 
+#' @param trim logical; do you want the worksheet extent to be modified to
 #'   correspond exactly to the cells being edited?
 #' @param verbose logical; do you want informative message?
-#'   
+#'
 #' @examples
 #' \dontrun{
 #' yo <- new_ss("yo")
 #' yo <- edit_cells(yo, input = head(iris), header = TRUE, trim = TRUE)
 #' get_via_csv(yo)
-#' 
+#'
 #' yo <- add_ws(yo, "by_row_FALSE")
 #' yo <- edit_cells(yo, ws = "by_row_FALSE", LETTERS[1:5], "A8")
 #' get_via_cf(yo, ws = "by_row_FALSE", min_row = 7) %>% simplify_cf()
-#' 
+#'
 #' yo <- add_ws(yo, "by_row_TRUE")
 #' yo <- edit_cells(yo, ws = "by_row_TRUE", LETTERS[1:5], "A8", by_row = TRUE)
 #' get_via_cf(yo, ws = "by_row_TRUE", min_row = 7) %>% simplify_cf()
 #' }
-#' 
+#'
 #' @export
-edit_cells <- function(ss, ws = 1, input = '', anchor = 'A1', rc = FALSE,
+edit_cells <- function(ss, ws = 1, input = '', anchor = 'A1',
                        by_row = FALSE, header = FALSE, trim = FALSE,
                        verbose = TRUE) {
 
@@ -62,12 +60,14 @@ edit_cells <- function(ss, ws = 1, input = '', anchor = 'A1', rc = FALSE,
       input_extent[1] <- input_extent[1] + 1
     }
   }
-  limits <- convert_range_to_limit_list(anchor, rc = rc)
+  limits <- anchor %>%
+    as.cell_limits() %>%
+    limit_list()
   limits$`max-row` <- limits$`max-row` + input_extent[1] - 1
   limits$`max-col` <- limits$`max-col` + input_extent[2] - 1
   ## TO DO: if I were really nice, I would use the positioning notation from the
   ## user, i.e. learn it from anchor, instead of defaulting to A1
-  range <- limits %>% convert_limit_list_to_range()
+  range <- limits %>% un_limit_list() %>% convert_cell_limits_to_range()
   if(verbose) {
     message(sprintf("Range affected by the update: \"%s\"", range))
   }
@@ -81,7 +81,7 @@ edit_cells <- function(ss, ws = 1, input = '', anchor = 'A1', rc = FALSE,
                 max(this_ws$col_extent, limits$`max-col`),
                 verbose)
     Sys.sleep(1)
-    
+
   }
 
   input <- input %>% as_character_vector(header = header)
@@ -161,7 +161,7 @@ catch_hopeless_input <- function(x) {
     stop(paste("Non-data-frame, list-like objects not suitable as input.",
                "Maybe pre-process it yourself?"))
   }
-  
+
   if(!is.null(dim(x)) && length(dim(x)) > 2) {
     stop("Input has more than 2 dimensions.")
   }
