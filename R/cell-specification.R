@@ -69,28 +69,6 @@ as.cell_limits.character <- function(x) {
 
 }
 
-#' Convert a list into a cell_limits object
-#'
-#' @param x list of length two
-#'
-#' @return a \code{cell_limits} object, which is a list with components named
-#'   \code{rows} and \code{cols}, each holding a minimum and maximum in an
-#'   integer vector of length two
-#'
-#' @examples
-#' \dontrun{
-#' as.cell_limits(list(rows = c(1, 5), cols = c(1, 4)))
-#' as.cell_limits(list(c(1, 5), c(1, 4)))
-#' }
-#'
-#' @keywords internal
-as.cell_limits.list <- function(x) {
-
-  stopifnot(length(x) == 2L)
-  cell_limits(x[[1]], x[[2]])
-
-}
-
 #' Convert A1 positioning notation to R1C1 notation
 #'
 #' @param x vector of cell positions in A1 notation
