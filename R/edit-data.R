@@ -13,7 +13,7 @@
 #'   character vector, presumably an atomic vector, a factor, a matrix or a
 #'   data.frame
 #' @param anchor single character string specifying the upper left cell of the
-#'   cell range to edit
+#'   cell range to edit; positioning notation can be either "A1" or "R1C1"
 #' @param by_row logical; should we fill cells across a row (\code{by_row =
 #'   TRUE}) or down a column (\code{by_row = FALSE}, default); consulted only
 #'   when \code{input} is a vector, i.e. \code{dim(input)} is \code{NULL}
