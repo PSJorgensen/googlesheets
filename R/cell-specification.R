@@ -7,12 +7,12 @@
 
 cell_limits <- function(rows, cols) {
 
-  ok <- function(x) is.na(x) | x > 0
-  stopifnot(is.numeric(rows), length(rows) == 2L, all(ok(rows)))
-  stopifnot(is.numeric(cols), length(cols) == 2L, all(ok(rows)))
+  NA_or_pos <- function(x) is.na(x) | x > 0
+  stopifnot(is.numeric(rows), length(rows) == 2L, all(NA_or_pos(rows)))
+  stopifnot(is.numeric(cols), length(cols) == 2L, all(NA_or_pos(rows)))
 
-  if(all(!is.na(rows))) stopifnot(rows[1] <= rows[2])
-  if(all(!is.na(cols))) stopifnot(cols[1] <= cols[2])
+  if(!anyNA(rows)) stopifnot(rows[1] <= rows[2])
+  if(!anyNA(cols)) stopifnot(cols[1] <= cols[2])
 
   structure(list(rows = rows, cols = cols), class = "cell_limits")
 
