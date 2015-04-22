@@ -372,7 +372,7 @@ get_col <- function(ss, ws = 1, col) {
 get_cells <- function(ss, ws = 1, range) {
 
   limits <- range %>%
-    as.cell_limits() %>%
+    cellranger::as.cell_limits() %>%
     limit_list()
   get_via_cf(ss, ws, limits = limits)
 }

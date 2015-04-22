@@ -1,7 +1,5 @@
-## cell specification functions that are specific to googlesheets
-
-## everything that is in common with readxl goes in
-## cell-specification.R
+## cell specification functions that are specific to googlesheets, i.e. stuff
+## not handled in cellranger
 
 ## basically boils down to:
 ## cell_limits object <--> limits in the list form I need for Sheets API query
@@ -16,8 +14,7 @@ limit_list <- function(x) {
 
 un_limit_list <- function(x) {
 
-  structure(list(rows = c(x[['min-row']], x[['max-row']]),
-                 cols = c(x[['min-col']], x[['max-col']])),
-            class = "cell_limits")
+  cellranger::cell_limits(rows = c(x[['min-row']], x[['max-row']]),
+                          cols = c(x[['min-col']], x[['max-col']]))
 
 }
